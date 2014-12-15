@@ -2,17 +2,25 @@
 'use strict';
 
 var expect      = require('chai').expect,
+    cp          = require('child_process'),
+    h           = require('../helpers/helpers'),
     User        = require('../../server/models/user'),
     Lab         = require('lab'),
     lab         = exports.lab = Lab.script(),
     describe    = lab.describe,
-    it          = lab.it;
+    it          = lab.it,
+    db          = h.getDB(),
     //before      = lab.before,
-    //beforeEach  = lab.beforeEach;
+    beforeEach  = lab.beforeEach;
 
 
 
 describe('User', function(){
+  beforeEach(function(done){
+    cp.execFile(__dirname + '/../scripts/clean-db.sh', [db], {cwd:__dirname + '/../scripts'}, function(err, stdout, stderr){
+      done();
+    });
+  });
 
   describe('constructor', function(){
     it('should create a User object', function(done){
