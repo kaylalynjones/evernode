@@ -11,7 +11,13 @@
   },
   "scripts": {
     "start": "node server/index.js",
-    "postinstall": "grunt deploy"
+    "postinstall": "grunt deploy",
+    "syntax": "grunt build",
+    "test": "make test",
+    "coveralls": "make test-cov | coveralls"
+  },
+  "bin": {
+    "coveralls": "./node_modules/coveralls/bin/coveralls.js"
   },
   "author": "Chyld Medford <chyld.medford@gmail.com>",
   "license": "MIT",
