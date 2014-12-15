@@ -19,8 +19,7 @@ env:
   global:
     - DATABASE_URL=postgres://postgres@localhost/evernode_test
     - AWS_BUCKET=kjones-evernode-test
-    #AWS_ACCESS_KEY_ID
-    -secure: "D3dX1Y5TtEkZ1duoo/Yfd9JLm1Qzaj3T4pxVU51vs7lwCSbl0NzwD+UPsryk72I3JkmESnSdkroErUBLxpEcPt43Prv3LYOOHbbRV/5MnMXI86CL0UJFrkST5CI+NK2NLB/+/lH6+DUFHBQJ5nbCwhnp5NeDyCMp2DBj8oLin4k="
-    #AWS_SECRET_ACCESS_KEY
-    -secure: "JTA3lfDtlWuHOo8Ppsi7/m6XwVnCVnJdaXIts/r9HWYgppfGyyFIJWqKOHimDiOFkP2DJtvw+ttAaHcJs/Wb267oEY4MvHejD9+6MMalaINBwJcrDEDfxCpo/eEz493NqbUU+n/KjOLUoBQN+QTfLg9LaFaglQiMFe/YkLYuurk="
-    
+      #AWS_ACCESS_KEY_ID
+    - secure: "D3dX1Y5TtEkZ1duoo/Yfd9JLm1Qzaj3T4pxVU51vs7lwCSbl0NzwD+UPsryk72I3JkmESnSdkroErUBLxpEcPt43Prv3LYOOHbbRV/5MnMXI86CL0UJFrkST5CI+NK2NLB/+/lH6+DUFHBQJ5nbCwhnp5NeDyCMp2DBj8oLin4k="
+      #AWS_SECRET_ACCESS_KEY
+    - secure: "JTA3lfDtlWuHOo8Ppsi7/m6XwVnCVnJdaXIts/r9HWYgppfGyyFIJWqKOHimDiOFkP2DJtvw+ttAaHcJs/Wb267oEY4MvHejD9+6MMalaINBwJcrDEDfxCpo/eEz493NqbUU+n/KjOLUoBQN+QTfLg9LaFaglQiMFe/YkLYuurk="
