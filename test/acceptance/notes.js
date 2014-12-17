@@ -1,30 +1,24 @@
 /* jshint expr:true */
+
 'use strict';
 
-var expect      = require('chai').expect,
-cp          = require('child_process'),
-h           = require('../helpers/helpers'),
-server      = require('../../server/index'),
-Lab         = require('lab'),
-lab         = exports.lab = Lab.script(),
-describe    = lab.describe,
-it          = lab.it,
-db          = h.getDB(),
-beforeEach  = lab.beforeEach;
+var expect     = require('chai').expect,
+cp         = require('child_process'),
+h          = require('../helpers/helpers'),
+server     = require('../../server/index'),
+Lab        = require('lab'),
+lab        = exports.lab = Lab.script(),
+describe   = lab.describe,
+it         = lab.it,
+beforeEach = lab.beforeEach,
+db         = h.getDB();
 
-// {method: 'post',   path: '/notes/{noteId}/upload',        config: require('../definitions/notes/upload')},
-// {method: 'post',   path: '/notes/{noteId}/upload-mobile', config: require('../definitions/notes/upload-mobile')},
-// {method: 'get',    path: '/notes/{noteId}',               config: require('../definitions/notes/show')},
-// {method: 'delete', path: '/notes/{noteId}',               config: require('../definitions/notes/nuke')},
-// {method: 'get',    path: '/notes/count',
-
-describe('Note', function(){
-  var cookie;
+describe('Notes', function(){
+  var cookie, noteId;
 
   beforeEach(function(done){
     cp.execFile(__dirname + '/../scripts/clean-db.sh', [db], {cwd:__dirname + '/../scripts'}, function(err, stdout, stderr){
-
-      var options = {
+      var options1 = {
         method: 'post',
         url: '/login',
         payload:{
@@ -32,43 +26,45 @@ describe('Note', function(){
           password: '1234'
         }
       };
-      // notes = {
-      //   method: 'post',
-      //   url: '/notes',
-      //   headers: {
-      //     cookie:cookie
-      //   },
-      //   payload:{
-      //     title:'Note Two',
-      //     body:'Lorem ipsum dipsum',
-      //     tags:'two,lorem,ipsum',
-      //     noteId: 200
-      //   }
-      // };
-      // server.inject(notes, function(response){
-      //   console.log(response);
-      // });
-      server.inject(options, function(response){
+
+      server.inject(options1, function(response){
         cookie = response.headers['set-cookie'][0].match(/hapi-cookie=[^;]+/)[0];
-        done();
+        var options2 = {
+          method: 'post',
+          url: '/notes',
+          payload: {
+            title: 'a',
+            body: 'b',
+            tags: 'c,d,e'
+          },
+          headers:{
+            cookie:cookie
+          }
+        };
+
+        server.inject(options2, function(response){
+          noteId = response.result.noteId;
+          done();
+        });
       });
     });
   });
 
   describe('post /notes', function(){
-    it('should create a new Note', function(done){
+    it('should create a note', function(done){
       var options = {
         method: 'post',
         url: '/notes',
-        headers: {
-          cookie:cookie
+        payload: {
+          title: 'a',
+          body: 'b',
+          tags: 'c,d,e'
         },
-        payload:{
-          title:'Note One',
-          body:'Lorem ipsum dipsum',
-          tags:'one,lorem,ipsum'
+        headers:{
+          cookie:cookie
         }
       };
+
       server.inject(options, function(response){
         expect(response.statusCode).to.equal(200);
         done();
@@ -76,33 +72,54 @@ describe('Note', function(){
     });
   });
 
-  // ERROR: 400 'username is required'
-  // describe('get /notes/count', function(){
-  //   it('should get number of users notes', function(done){
-  //     var options = {
-  //       method: 'post',
-  //       url: '/login',
-  //       headers: {
-  //         cookie:cookie
-  //       }
-  //     };
-  //     server.inject(options, function(response){
-  //       console.log(response);
-  //       expect(response.statusCode).to.equal(200);
-  //       done();
-  //     });
-  //   });
-  // });
-
   describe('get /notes', function(){
-    it('should return a Users notes', function(done){
+    it('should get notes', function(done){
       var options = {
         method: 'get',
         url: '/notes',
-        headers: {
+        headers:{
           cookie:cookie
         }
       };
+
+      server.inject(options, function(response){
+        expect(response.statusCode).to.equal(200);
+        expect(response.result.notes).to.have.length(1);
+        done();
+      });
+    });
+  });
+
+
+  describe('get /notes/count', function(){
+    it('should get notes count', function(done){
+      var options = {
+        method: 'get',
+        url: '/notes/count',
+        headers:{
+          cookie:cookie
+        }
+      };
+
+      server.inject(options, function(response){
+        expect(response.statusCode).to.equal(200);
+        expect(response.result.count).to.equal('1');
+        done();
+      });
+    });
+  });
+
+
+  describe('get /notes/3', function(){
+    it('should show a note', function(done){
+      var options = {
+        method: 'get',
+        url: '/notes/' + noteId,
+        headers:{
+          cookie:cookie
+        }
+      };
+
       server.inject(options, function(response){
         expect(response.statusCode).to.equal(200);
         done();
@@ -110,19 +127,40 @@ describe('Note', function(){
     });
   });
 
-  describe('get /notes/1', function(){
-    it('should get a particular note', function(done){
+  describe('delete /notes/3', function(){
+    it('should delete a note', function(done){
       var options = {
-        method: 'get',
-        url: '/status',
-        headers: {
+        method: 'delete',
+        url: '/notes/' + noteId,
+        headers:{
           cookie:cookie
         }
       };
+
       server.inject(options, function(response){
         expect(response.statusCode).to.equal(200);
         done();
       });
     });
   });
-});//end
+
+  describe('post /notes/3/upload-mobile', function(){
+    it('should upload a mobile photo', function(done){
+      var options = {
+        method: 'post',
+        url: '/notes/' + noteId + '/upload-mobile',
+        headers:{
+          cookie:cookie
+        },
+        payload:{
+          b64: 'ab64string'
+        }
+      };
+
+      server.inject(options, function(response){
+        expect(response.statusCode).to.equal(200);
+        done();
+      });
+    });
+  });
+});
