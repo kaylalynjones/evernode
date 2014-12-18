@@ -5,4 +5,4 @@ evernode
 ##### Coveralls
 [![Coverage Status](https://img.shields.io/coveralls/kaylalynjones/evernode.svg)](https://coveralls.io/r/kaylalynjones/evernode)
 ##### Sauce Labs
-[![Sauce Test Status](https://saucelabs.com/buildstatus/kjones-evernode)](https://saucelabs.com/u/kjones-evernode)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/kjones-evernode.svg)](https://saucelabs.com/u/kjones-evernode)
